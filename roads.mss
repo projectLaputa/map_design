@@ -174,6 +174,20 @@ come in as well.
 }
 
 
+#railway[zoom>=11][zoom<=20] {
+	[stylegroup='railway'] {
+    	line-color: @rail_line;
+    	[zoom=11]{ line-width: 0.2; }
+    	[zoom=12]{ line-width: 0.4; }
+    	[zoom=13]{ line-width: 0.8; }
+    	[zoom=14]{ line-width: 1.2; }
+    	[zoom=15]{ line-width: 1.9; }
+    	[zoom=16]{ line-width: 2.6; }
+    	[zoom=17]{ line-width: 3.8; }
+    	[zoom>=18]{ line-width: 5; }
+  	}
+}
+
 #roads_high[zoom>=11][zoom<=20],
 #tunnel[render='3_inline'][zoom>=11][zoom<=20],
 #bridge[render='3_inline'][zoom>=11][zoom<=20]{
@@ -200,10 +214,11 @@ come in as well.
     [tunnel=1] { line-color: lighten(@secondary_fill, 10%); }
   }
   [stylegroup='railway'] {
-    line-color: @rail_line;
-    line-dasharray: 1,1;
+    //line-color: @rail_line;
+    line-color: #fff;
+    line-dasharray: 3,3;
     [type='subway'] { line-opacity: 0.67; }
-    [zoom>15] { line-dasharray: 1,2; } 
+    [zoom>15] { line-dasharray: 10,10; } 
   }
   [stylegroup='noauto'],
   [stylegroup='service'],
