@@ -1,8 +1,12 @@
-# Style sheets and icons for map design
+# map design
 ## About
-- There're all style sheets, icons and layers.
-- maki icons should be in 'img/maki/' of project directory.
-- poi.mss is style sheets about maki icons.
+- **AizuMap** is TileMill project directory.
+	- **AizuMap/poi.mss** is style sheets about maki icons.
+	- maki icons are **AizuMap/img/maki/**.
+- **tmp** is including temporary files for map designing.
+
+## How to import
+Please copy **AizuMap** directory to your TileMill project directory.
 
 ## For reference
 - [wheelmap.org](http://wheelmap.org/en)
