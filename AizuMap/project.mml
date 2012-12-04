@@ -486,6 +486,27 @@
       "name": "railway_dashed_white"
     },
     {
+      "geometry": "point",
+      "extent": [
+        139.892987,
+        37.334573,
+        139.948239,
+        37.566465
+      ],
+      "id": "station",
+      "class": "",
+      "Datasource": {
+        "file": "/Users/takuti/work/projectLaputa/map_design/tmp/aizu_station.csv",
+        "id": "station",
+        "project": "AizuMap",
+        "srs": ""
+      },
+      "srs-name": "autodetect",
+      "srs": "",
+      "advanced": {},
+      "name": "station"
+    },
+    {
       "Datasource": {
         "dbname": "osm",
         "extent": "-20037508.34 -20037508.34 20037508.34 20037508.34",
