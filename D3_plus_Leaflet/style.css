@@ -1,0 +1,32 @@
+html, body{
+	background: #fff;
+	height: 100%;
+	width: 1000px;
+	color: #444;
+	font-family:'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+	font-size: 13px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#wrapper {
+	margin: 50px;
+}
+
+#map { 
+	height: 500px;
+	width: 100%;
+	margin-bottom: 25px;
+}
+
+#info {
+}
+
+.category_20 {
+	background-color: #ddd;
+	float: left;
+	margin-bottom: 25px;
+	padding-right: 1em;
+}
+
+.clearfix { clear: both; }

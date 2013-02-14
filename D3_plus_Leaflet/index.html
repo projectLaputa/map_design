@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<title>D3 + leaflet test</title>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.css" />
+		<!--[if lte IE 8]>
+	  	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+		<![endif]-->
+		<link rel="stylesheet" href="./style.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+			<h1>D3 + leaflet on Aizu Map</h1>
+
+			<div id="map"></div>
+
+			<div id="info">
+				<h3>Place info. of checked icon just now</h3>	
+				<p>Name: <span id="place_name"></span></p>
+				<p>Category: <span id="place_category"></span></p>
+				<p>Latitude: <span id="place_lat"></span></p>
+				<p>Longitude: <span id="place_lng"></span></p>
+				<p>WheelChair: <span id="place_wheelchair"></span></p>
+			</div>
+
+			<div id="categories"></div>	
+			<div class="clearfix"></div>	
+		</div>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script>
+			// Event hundler for category checkbox
+			function changeCategory(category){
+				if(category.checked) {
+					$("."+category.name).css("display", "block");
+				} else {
+					$("."+category.name).css("display", "none");
+				}
+			}
+
+			
+			var map = new L.Map('map', {
+				center: [37.523171, 139.938133], 
+				zoom: 15});
+			
+			// Don't show the 'Powered by Leaflet' text
+			map.attributionControl.setPrefix('');
+
+			var southWest = new L.LatLng(37.435067, 139.815874),
+   				northEast = new L.LatLng(37.553015, 140.053368),
+    			bounds = new L.LatLngBounds(southWest, northEast);
+
+			L.tileLayer('http://localhost:8888/v2/AizuMap/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				minZoom: 14,
+				attribution: "Aizu Map",
+				maxBounds: bounds
+			}).addTo(map);
+
+			// Make SVG layer and group for circles.
+			var svg = d3.select(map.getPanes().overlayPane).append("svg"), 
+						g = svg.append("g").attr("class", "leaflet-zoom-hide");	
+
+			// Load CSV.
+			d3.csv("aizu_poi.csv", function(data) {
+				var categories = new Array();
+				for(var i=0; i < data.length; i++){
+					if(categories[data[i]['category']]==null){
+						categories[data[i]['category']] = 1;
+					} else {
+						categories[data[i]['category']]++;
+					}
+				}
+
+				// Make checkbox for each category's circle: display or hidden
+				var form = "<form name='category_checkbox'>";
+				var cnt=0;
+				for(var i in categories){
+					if(cnt == 0){ form += "<div class='category_20'>"; }
+					form += "<input type='checkbox' name='" + i + "' onclick='changeCategory(this);' checked><label>" + i + "(" + categories[i] + ")</label><br />";
+					if(++cnt == 20){ form += "</div>"; cnt=0; }	
+				}
+				form += "</form>";
+				document.getElementById("categories").innerHTML = form;
+
+				// Make circles
+				var circles = g	.selectAll("circle")
+        								.data(data)
+												.enter()
+												.append("circle")
+												.style("fill", "#fa0aae")
+												.style("opacity", "0.75")
+												.attr("class", function(d) {
+													return d['category']; 
+												})
+												.attr("onclick", function(d) {
+													// Each process to re-write place info.
+													var p1 = "document.getElementById('place_name').innerHTML = '" + d['name'] + "';",
+															p2 = "document.getElementById('place_category').innerHTML = '" + d['category'] + "';",
+															p3 = "document.getElementById('place_lat').innerHTML = '" + d['lat'] + "';",
+															p4 = "document.getElementById('place_lng').innerHTML = '" + d['lng'] + "';",
+															p5 = "document.getElementById('place_wheelchair').innerHTML = '" + d['wheelchair'] + "';";
+													return  p1+p2+p3+p4+p5;
+												});
+
+				map.on("viewreset", reset);
+  			reset();
+
+				// Reposition the SVG when zoom or loaded.
+				function reset() {
+					var bottomLeft = project(southWest),
+        			topRight = project(northEast);
+
+			    svg .attr("width", topRight[0] - bottomLeft[0])
+      			  .attr("height", bottomLeft[1] - topRight[1])
+        			.style("margin-left", bottomLeft[0] + "px")
+        			.style("margin-top", topRight[1] + "px");
+
+    			g.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
+
+					circles	.attr("cx", function(d) {
+										return project(d)[0]; 
+									})	
+									.attr("cy", function(d) {
+										return project(d)[1];
+									})
+									.attr("r", map.getZoom()-11);
+  			}
+				
+				// Convert from Lat,Lng to pixels.
+				function project(x) {
+					var point = map.latLngToLayerPoint(new L.LatLng(x['lat'], x['lng']));
+  				return [point.x, point.y];
+				}
+			});	
+		</script>
+
+
+	</body>
+</html>
